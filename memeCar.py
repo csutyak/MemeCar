@@ -153,8 +153,7 @@ class memeCar:
         self.carHitbox.bottomLeftx = self.sprite.x - (self.image_hyp * math.sin(math.radians(self.rotation + 22)))       
         self.carHitbox.bottomLefty = self.sprite.y - (self.image_hyp * math.cos(-1 * math.radians(self.rotation + 22)))  
         self.carHitbox.bottomRightx = self.sprite.x + (self.image_hyp * math.sin(-1 * (math.radians(self.rotation - 22))))       
-        self.carHitbox.bottomRighty = self.sprite.y - (self.image_hyp * math.cos ((math.radians(self.rotation - 22))))    
-           
+        self.carHitbox.bottomRighty = self.sprite.y - (self.image_hyp * math.cos ((math.radians(self.rotation - 22))))     
 
         self.hitboxTopLeftLabel.text = str(self.carHitbox.topLeftx) 
         self.hitboxTopLeftLabel1.text = str(self.carHitbox.topLefty) 

@@ -1,5 +1,3 @@
-
-
 class hitbox:
     def __init__(self, topLeftx, topLefty, topRightx, topRighty, bottomLeftx, bottomLefty, bottomRightx, bottomRighty):
         self.topLeftx = topLeftx
@@ -10,6 +8,15 @@ class hitbox:
         self.bottomLefty = bottomLefty
         self.bottomRightx = bottomRightx
         self.bottomRighty = bottomRighty
+
+        self.middleLeftx = 0
+        self.middleLefty = 0
+        self.middleRightx = 0
+        self.middleRighty = 0
+        self.middleTopx = 0
+        self.middleTopy = 0
+        self.middleBottomx = 0
+        self.middleBottomy = 0
 
         self.leftMostx = 0
         self.rightMostx = 0 
@@ -42,6 +49,22 @@ class hitbox:
         self.botMosty = botMosty
 
     def updateEdges(self):
+        #calculate middle left
+        self.middleLeftx = (self.topLeftx - self.bottomLeftx)/2 + self.bottomLeftx
+        self.middleLefty = (self.topLefty - self.bottomLefty)/2 + self.bottomLefty
+
+        #calculate middle right
+        self.middleRightx = (self.topRightx - self.bottomRightx)/2 + self.bottomRightx
+        self.middleRighty = (self.topRighty - self.bottomRighty)/2 + self.bottomRighty
+
+        #calculate top middle
+        self.middleTopx = (self.topLeftx - self.topRightx)/2 + self.topRightx
+        self.middleTopy = (self.topLefty - self.topRighty)/2 + self.topRighty
+
+        #calculate bottom middle
+        self.middleBottomx = (self.bottomLeftx - self.bottomRightx)/2 + self.bottomRightx
+        self.middleBottomy = (self.bottomLefty - self.bottomRighty)/2 + self.bottomRighty
+
         if self.topLeftx <= self.topRightx:
             if self.topLeftx <= self.bottomLeftx:
                 #top left

@@ -3,6 +3,7 @@ from pyglet.window import key
 from memeCar import memeCar
 from gameObject import GameObject 
 from walls import walls
+from lineWalls import lineWalls
 
 class GameWindow(pyglet.window.Window):
     def __init__(self, *args, **kwargs):
@@ -32,7 +33,7 @@ class GameWindow(pyglet.window.Window):
         self.inRangeValue = pyglet.text.Label(str(self.collision), x= 1750, y =600, batch=self.labelBatch)
 
         self.wallImageArr = []
-        self.wallObj = walls(self.wallPosArr)
+        self.wallObj = lineWalls(self.wallPosArr)
 
         trackimage = pyglet.image.load('Res/sprites/Track.png')
         self.trackbackground = pyglet.sprite.Sprite(trackimage, x=0, y = 0)
@@ -75,6 +76,8 @@ class GameWindow(pyglet.window.Window):
         else:
         	self.collision = False
         self.inRangeValue.text = str(self.collision)
+
+        self.wallObj.getLineDistanceArr(self.player.carHitbox)
 
 
 
