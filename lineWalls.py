@@ -1,5 +1,4 @@
 import pyglet
-from hitbox import hitbox
 from hitLine import hitLine
 
 class lineWalls:
@@ -13,14 +12,6 @@ class lineWalls:
 
         self.labelBatch = pyglet.graphics.Batch()
         self.inRange = False
-
-        self.dotBatch = pyglet.graphics.Batch()
-
-        image = pyglet.image.load('Res/sprites/dot.png')
-        self.dot1 = pyglet.sprite.Sprite(image, x=0, y = 0, batch = self.dotBatch)
-        self.dot2 = pyglet.sprite.Sprite(image, x=0, y = 0, batch = self.dotBatch)
-
-        self.collisionDot = pyglet.sprite.Sprite(image, x=0, y =0, batch = self.dotBatch)
 
         self.wallBatch = pyglet.graphics.Batch()
 
@@ -37,16 +28,10 @@ class lineWalls:
 
         for wallHitbox in self.wallHitboxArr:
             wallHitbox.updateEdges()
-            print(wallHitbox.leftMostx)
-            print(wallHitbox.rightMostx)
-            print(wallHitbox.topMosty)
-            print(wallHitbox.botMosty)
             
 
     def draw(self):
         self.wallBatch.draw()
-        self.dotBatch.draw()
-        self.labelBatch.draw()
 
     def checkCollision(self, hitboxAdd):
         ctr = 0
@@ -70,16 +55,20 @@ class lineWalls:
         
         #top middle line
         minDistance = 99999999
-        for wall in self.wallHitboxArr:
-            wallDistance = wall.findDistances(hitboxAdd)
-            if wallDistance != -1:
-                if minDistance > wallDistance:
-                    minDistance = wallDistance
+        minDistanceArray = [minDistance,minDistance,minDistance,minDistance,minDistance,minDistance,minDistance,minDistance]
         
-        print(minDistance)
-            
-            
-                
+        #loops through wall    
+        for wall in self.wallHitboxArr:
+
+            #gets the distances of that wall
+            wallDistanceArray = wall.findDistances(hitboxAdd)
+            for index in range(8):
+                if wallDistanceArray[index] != -1:
+                    if minDistanceArray[index] > wallDistanceArray[index]:
+                        minDistanceArray[index] = wallDistanceArray[index]
+
+        return minDistanceArray
+          
     def calcWallHitbox(self, wall):
         wallhitbox = hitLine(wall[0][0], wall[0][1], wall[1][0], wall[1][1])
         self.wallHitboxArr.append(wallhitbox)

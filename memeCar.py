@@ -8,6 +8,7 @@ class memeCar:
         self.posy = posy
         self.velx = 0
         self.vely = 0
+        self.initialRotation = rotation
         self.rotation =  rotation
 
         self.labelBatch = pyglet.graphics.Batch()
@@ -228,3 +229,12 @@ class memeCar:
         radians90 = math.radians(self.rotation + 90)
         self.velx = (self.forwardVel * math.sin(radians)) + (self.leftDriftVelocity * math.sin(radians90))
         self.vely = (self.forwardVel * math.cos(radians)) + (self.leftDriftVelocity * math.cos(radians90))
+
+    
+
+    def reset(self):
+        self.rotation = self.initialRotation
+        self.sprite.x = self.posx
+        self.sprite.y = self.posy
+        self.velx = 0
+        self.vely = 0

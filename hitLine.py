@@ -96,21 +96,31 @@ class hitLine:
         devisor = line1firstx - line1secondx
         if devisor == 0:
             devisor = 0.00000001
-        line1M = (line1firsty - line1secondy) / devisor
+        numerater = line1firsty - line1secondy
+        if numerater == 0:
+            numerater = 0.00000001
+        line1M = numerater / devisor
         line1B = (line1firsty - (line1M * line1firstx))
 
         #slope and b value of the second line
         devisor = line2firstx - line2secondx
         if devisor == 0:
             devisor = 0.00000001
-        line2M = (line2firsty - line2secondy) / devisor
+            
+        numerater = line2firsty - line2secondy
+        if numerater == 0:
+            numerater = 0.00000001
+        line2M = numerater / devisor
         line2B = (line2firsty - (line2M * line2firstx))
 
         #cordinates at which the lines intersect
         devisor = line2M - line1M
         if devisor == 0:
             devisor = 0.00000001
-        intersectx = (line1B - line2B) / (devisor)
+        if numerater == 0:
+            numerater = 0.00000001
+        numerater = (line1B - line2B)
+        intersectx = numerater / (devisor)
         intersecty = (line1M * intersectx) + line1B
 
         #check if in x range of first line
@@ -132,7 +142,7 @@ class hitLine:
     #only checks if its in range for the first Line :)
     #gets the distance from the intersecting point between the lines
     #add another 2 for the points of the back one and then use the distance between both of those to get orientation
-    def getDistanceFromIntersect(self, line1firstx, line1firsty, line1secondx, line1secondy, line2firstx, line2firsty, line2secondx, line2secondy, frontPointx, frontPointy, backPointx, backPointy ):
+    def getDistanceFromIntersect(self, line1firstx, line1firsty, line1secondx, line1secondy, line2firstx, line2firsty, line2secondx, line2secondy):
         #slope and b value of the first line
         devisor = line1firstx - line1secondx
         if devisor == 0:
@@ -156,15 +166,19 @@ class hitLine:
 
         #check if in x range of first line
         if self.checkinRange(intersectx, line1firstx, line1secondx) and self.checkinRange(intersecty, line1firsty, line1secondy):
-            #frontPointx, frontPointy
+            #line2firstx, line2firsty
             #intersectx 
             #intersecty 
-            frontDistance = math.sqrt(((frontPointx - intersectx)*(frontPointx - intersectx)) + ((frontPointy - intersecty)*(frontPointy - intersecty)))
-            backDistance = math.sqrt(((backPointx - intersectx)*(backPointx - intersectx)) + ((backPointy - intersecty)*(backPointy - intersecty)))
+            frontDistance = math.sqrt(((line2firstx - intersectx)*(line2firstx - intersectx)) + ((line2firsty - intersecty)*(line2firsty - intersecty)))
+            backDistance = math.sqrt(((line2secondx - intersectx)*(line2secondx - intersectx)) + ((line2secondy - intersecty)*(line2secondy - intersecty)))
             if frontDistance < backDistance:
-                return frontDistance
+                backDistance = -1
+                
+            else:
+                frontDistance = -1
+            return frontDistance, backDistance
 
-        return -1
+        return -1, -1
     
     def findDistances(self, hitboxAdd):
         #self.middleLeftx = 0
@@ -175,5 +189,25 @@ class hitLine:
         #self.middleTopy = 0
         #self.middleBottomx = 0
         #self.middleBottomy = 0
-        return self.getDistanceFromIntersect(self.firstX, self.firstY, self.secondX, self.secondY, hitboxAdd.middleTopx, hitboxAdd.middleTopy, hitboxAdd.middleBottomx, hitboxAdd.middleBottomy, hitboxAdd.middleTopx, hitboxAdd.middleTopy, hitboxAdd.middleBottomx, hitboxAdd.middleBottomy)
-    
+        distanceArray = [-1,-1,-1,-1,-1,-1,-1,-1]
+        frontDis, backDis = self.getDistanceFromIntersect(self.firstX, self.firstY, self.secondX, self.secondY, 
+            hitboxAdd.middleTopx, hitboxAdd.middleTopy, hitboxAdd.middleBottomx, hitboxAdd.middleBottomy)
+        
+        topRightDist, bottomLeftDist = self.getDistanceFromIntersect(self.firstX, self.firstY, self.secondX, self.secondY, 
+            hitboxAdd.topRightx, hitboxAdd.topRighty, hitboxAdd.bottomLeftx, hitboxAdd.bottomLefty)
+        
+        rightDist, leftDist =self.getDistanceFromIntersect(self.firstX, self.firstY, self.secondX, self.secondY, 
+            hitboxAdd.middleLeftx, hitboxAdd.middleLefty, hitboxAdd.middleRightx, hitboxAdd.middleRighty)
+        
+        topLeftDist, bottomRighttDist = self.getDistanceFromIntersect(self.firstX, self.firstY, self.secondX, self.secondY, 
+            hitboxAdd.topLeftx, hitboxAdd.topLefty, hitboxAdd.bottomRightx, hitboxAdd.bottomRighty)
+
+        distanceArray[0] = frontDis
+        distanceArray[1] = backDis
+        distanceArray[2] = topRightDist
+        distanceArray[3] = bottomLeftDist
+        distanceArray[4] = rightDist
+        distanceArray[5] = leftDist
+        distanceArray[6] = topLeftDist
+        distanceArray[7] = bottomRighttDist
+        return distanceArray
