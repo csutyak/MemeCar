@@ -2,17 +2,20 @@ import time
 from checkpointLines import checkpointLines
 
 class carScore:
-    def __init__(self, maxScore):
+    def __init__(self):
         self.score = 0
         self.timer = Timer()
-        self.maxScore = maxScore
         self.incrementalScore = 0
+
+        self.checkPointScore = 10
+        self.timeout = 5
+        self.hitWallScore = -10
     
     def start(self):
         self.timer.start()
     
     def checkTimeout(self): 
-        if self.timer.getTime() > self.maxScore:
+        if self.timer.getTime() > self.timeout:
             return True
         return False
     
@@ -23,7 +26,7 @@ class carScore:
         return finalScore
     
     def hitWall(self):
-        self.incrementalScore = -100
+        self.incrementalScore = self.hitWallScore
         self.score += self.incrementalScore
 
     def getLastIncremental(self):
@@ -31,7 +34,7 @@ class carScore:
 
 
     def checkPointReached(self):
-        self.incrementalScore = self.maxScore
+        self.incrementalScore = self.checkPointScore
         self.score += self.incrementalScore
         self.timer.reset()
         self.timer.start()

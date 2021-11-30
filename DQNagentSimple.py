@@ -28,7 +28,7 @@ class DeepQNetwork(nn.Module):
 
 class Agent():
     def __init__ (self, gamma, epsilon, lr, input_dims, batch_size, n_actions, 
-            mem_size =1000000, eps_end=0.01, eps_dec=5e-7, replace = 1000):
+            mem_size =50000, eps_end=0.05, eps_dec=5e-7, replace = 1000):
         self.gamma = gamma
         self.epsilon = epsilon
         self.eps_min = eps_end
@@ -54,11 +54,14 @@ class Agent():
             action = np.random.choice(self.action_space)
         
         return action
+    def get_action_array(self, observation):
+        state = T.tensor([observation]).to(self.Q_eval.device)
+        return self.Q_eval.forward(state)
     
     def store_transition(self, state, action, reward, newState, done):
         self.memory.store_transition(state, action, reward, newState, done)
     
-    def  sample_memory(self):
+    def sample_memory(self):
         state, action, reward, new_state, done = self.memory.sample_buffer(self.batch_size)
 
         states = T.tensor(state).to(self.Q_eval.device)
@@ -81,7 +84,8 @@ class Agent():
     def learn(self):
         if self.memory.mem_ctr < self.batch_size:
             return
-        
+        elif self.memory.mem_ctr == self.batch_size:
+            print("learning!")
         self.Q_eval.optimizer.zero_grad()
 
         self.replace_target_network()
@@ -93,7 +97,7 @@ class Agent():
         q_next = self.Q_next.forward(newStates).max(dim=1)[0]
 
         q_next[dones] = 0.0
-        q_target = rewards + self.gamma*q_next
+        q_target = rewards + self.gamma * q_next
 
         loss = self.Q_eval.loss(q_target, q_pred).to(self.Q_eval.device)
         loss.backward()
@@ -101,8 +105,6 @@ class Agent():
         self.learn_step_counter += 1
 
         self.decrement_epsilon()
-
-
     
     def save(self, gameCtr):
         PATH = "output/state_dict_model"+ str(gameCtr) + ".pt"
@@ -110,7 +112,21 @@ class Agent():
 
         # Save
         T.save(self.Q_eval.state_dict(), PATH)
-        T.save(self.Q_next.state_dict(), PATH)
+        T.save(self.Q_next.state_dict(), PATH2)
+    
+    def getEPValue(self):
+        return self.epsilon
+    
+    def setEPValue(self, value):
+        self.epsilon = value
+    
+    def saveModel(self, name):
+        T.save(self.Q_eval.state_dict(), name)
+    
+    def loadModel(self, name):
+        self.Q_eval.load_state_dict(T.load(name))
+        self.Q_next.load_state_dict(T.load(name))
+
 
 class replayBuffer():
     def __init__ (self, max_size, input_shape, n_actions):
@@ -143,3 +159,4 @@ class replayBuffer():
         dones = self.terminal_memory[batch]
 
         return states, actions, rewards, newState, dones
+    

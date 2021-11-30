@@ -28,7 +28,7 @@ class DeepQNetwork(nn.Module):
 
 class Agent():
     def __init__ (self, gamma, epsilon, lr, input_dims, batch_size, n_actions, 
-            max_mem_size=1000000, eps_end=0.01, eps_dec=1e-4):
+            max_mem_size=50000, eps_end=0.01, eps_dec=1e-4):
         self.gamma = gamma
         self.epsilon = epsilon
         self.eps_min = eps_end
@@ -104,5 +104,4 @@ class Agent():
 
         # Save
         T.save(self.Q_eval.state_dict(), PATH)
-
-
+    

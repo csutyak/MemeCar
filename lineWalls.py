@@ -5,33 +5,15 @@ class lineWalls:
     def __init__(self, wallsArr):
         self.wallCtr = 0
         self.wallsArr = wallsArr
-        self.spriteArr = []
+
         self.wallHitboxArr = []
 
-        self.wallThicc = 1
-
-        self.labelBatch = pyglet.graphics.Batch()
         self.inRange = False
 
-        self.wallBatch = pyglet.graphics.Batch()
-
         for wall in wallsArr:
-            
-            print("wall " + str(self.wallCtr))
-            image = "wall" + str(self.wallCtr) + ".png"
-            image = pyglet.image.load('Res/sprites/' + image)
-            sprite = pyglet.sprite.Sprite(image, x=0, y = 0, batch = self.wallBatch)
-            self.spriteArr.append(sprite)
             self.calcWallHitbox(wall)
 
-            self.wallCtr += 1
-
-        for wallHitbox in self.wallHitboxArr:
-            wallHitbox.updateEdges()
-            
-
-    def draw(self):
-        self.wallBatch.draw()
+            self.wallCtr += 1           
 
     def checkCollision(self, hitboxAdd):
         ctr = 0
@@ -44,14 +26,6 @@ class lineWalls:
                     return False
 
     def getLineDistanceArr(self, hitboxAdd):
-        #self.topLeftx
-        #self.topLefty
-        #self.topRightx
-        #self.topRighty
-        #self.bottomLeftx
-        #self.bottomLefty
-        #self.bottomRightx
-        #self.bottomRighty
         
         #top middle line
         minDistance = 99999999
